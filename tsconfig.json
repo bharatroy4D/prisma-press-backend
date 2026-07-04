@@ -1,0 +1,17 @@
+{
+  "compilerOptions": {
+    "outDir": "./dist",
+    "module": "ESNext",
+    "moduleResolution": "bundler",
+    "target": "ES2023",
+    "types": ["node"],
+    "sourceMap": true,
+    "declaration": true,
+    "noUncheckedIndexedAccess": true ,
+    "strict": true,
+    "isolatedModules": true,
+    "noUncheckedSideEffectImports":true ,
+    "moduleDetection": "force",
+    "skipLibCheck": true
+  }
+}
