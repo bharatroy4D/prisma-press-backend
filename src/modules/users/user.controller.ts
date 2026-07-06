@@ -7,17 +7,28 @@ import { userService } from "./user.service";
 
 
 const RegisterUser = async (req: Request, res: Response) => {
-    const payload = req.body;
-    const user = await userService.RigisterUserIntoDB(payload)
+    try {
+        const payload = req.body;
+        const user = await userService.RigisterUserIntoDB(payload)
 
-    res.status(HttpStatus.CREATED).json({
-        success: true,
-        successStatus: HttpStatus.CREATED,
-        message: "User Register Successfully",
-        data: {
-            user
-        }
-    })
+        res.status(HttpStatus.CREATED).json({
+            success: true,
+            successStatus: HttpStatus.CREATED,
+            message: "User Register Successfully",
+            data: {
+                user
+            }
+        })
+    } catch (error) {
+        res.status(HttpStatus.CREATED).json({
+            success: true,
+            successStatus: HttpStatus.CREATED,
+            message: "User Register Successfully",
+            data: {
+                user
+            }
+        })
+    }
 }
 export const userController = {
     RegisterUser

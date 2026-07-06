@@ -39,6 +39,7 @@ const RigisterUserIntoDB = async (payload: RegisterUserPayload) => {
             profile: true
         }
     })
+    return user;
 }
 
 export const userService = {
