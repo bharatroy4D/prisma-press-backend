@@ -7,7 +7,7 @@ model User {
     role         Role         @default(USER)
     createdAt    DateTime     @default(now())
     updated      DateTime     @updatedAt
-    profileId    Profile?
+    profile    Profile?
 
     @@map("Users")
 }
