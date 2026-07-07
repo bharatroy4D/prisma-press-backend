@@ -1,0 +1,17 @@
+import { NextFunction, Request, RequestHandler, response, Response } from "express";
+import HttpStatus from "http-status";
+
+export const catchAsync = (fn: RequestHandler) => {
+    return async (req: Request, res: Response, next: NextFunction) => {
+        try {
+            await fn(req, res, next);
+        } catch (error) {
+            res.status(HttpStatus.INTERNAL_SERVER_ERROR).json({
+                success: false,
+                successStatus: HttpStatus.INTERNAL_SERVER_ERROR,
+                message: "Failed to Register User",
+                error: (error as Error).message
+            })
+        }
+    }
+}
