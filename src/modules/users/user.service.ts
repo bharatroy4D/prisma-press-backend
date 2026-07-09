@@ -19,14 +19,14 @@ const RigisterUserIntoDB = async (payload: RegisterUserPayload) => {
             name,
             email,
             password: hashedPassword,
-            profile:{
-                create:{
+            profile: {
+                create: {
                     profilePhoto
                 }
             }
         }
     })
-    
+
     const user = await prisma.user.findUnique({
         where: {
             id: createdUser.id,
@@ -41,7 +41,20 @@ const RigisterUserIntoDB = async (payload: RegisterUserPayload) => {
     })
     return user;
 }
+const getMyProfileFromDB = async (userId: string) => {
+    
+    const user = await prisma.user.findUniqueOrThrow({
+        where: { id: userId },
+        omit: {
+            password: true
+        },
+        include: {
+            profile: true
+        }
+    })
+    return user;
+}
 
 export const userService = {
-    RigisterUserIntoDB
+    RigisterUserIntoDB, getMyProfileFromDB
 }
