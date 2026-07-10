@@ -46,8 +46,12 @@ const userLoginIntoDB = async (payload: ILoginUser) => {
     )
 
     return { accessToken, refreshToken };
+};
+const refreshTokenIntoCookie = async (refreshToken: string) => {
+
 }
 
+
 export const authService = {
-    userLoginIntoDB
+    userLoginIntoDB, refreshTokenIntoCookie
 }

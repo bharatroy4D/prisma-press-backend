@@ -20,7 +20,7 @@ const RegisterUser = catchAsync(async (req: Request, res: Response) => {
     // })
     sendResponse(res, {
         success: true,
-        successStatus: HttpStatus.CREATED,
+        statusCode: HttpStatus.CREATED,
         message: "User Register Successfully",
         data: { user }
     })
@@ -33,7 +33,7 @@ const getMyProfile = catchAsync(async (req: Request, res: Response) => {
     const profile = await userService.getMyProfileFromDB(req.user!.id);
     sendResponse(res, {
         success: true,
-        successStatus: HttpStatus.OK,
+        statusCode: HttpStatus.OK,
         message: "User profile Retrived Successfully",
         data: { profile }
     })
@@ -47,7 +47,7 @@ const updateMyProfile = catchAsync(async (req: Request, res: Response) => {
 
     sendResponse(res, {
         success: true,
-        successStatus: HttpStatus.OK,
+        statusCode: HttpStatus.OK,
         message: "User profile is update",
         data: { updateProfile }
     })
