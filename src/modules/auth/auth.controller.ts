@@ -31,12 +31,12 @@ const userLogin = catchAsync(async (req: Request, res: Response) => {
 })
 const refreshToken = catchAsync(async (req: Request, res: Response) => {
     const refreshToken = req.cookies.refreshToken;
-    const result = await authService.refreshTokenIntoCookie(refreshToken)
+    const { accessToken } = await authService.refreshTokenIntoCookie(refreshToken)
     sendResponse(res, {
         success: true,
         statusCode: HttpStatus.OK,
         message: "Refresh token retrived successfully",
-        data: { result }
+        data: { accessToken }
     })
 
 })
