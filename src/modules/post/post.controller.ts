@@ -1,8 +1,21 @@
 import { Request, Response } from "express"
 import { catchAsync } from "../../utils/catchAsync"
-
+import { postService } from "./post.services";
+import { sendResponse } from "../../utils/sendResponse";
+import HttpStatus from "http-status";
 const createPost = catchAsync(async (req: Request, res: Response) => {
+    const id = req.user?.id;
+    const payload = req.body;
 
+    const result = await postService.createPostIntoDB(payload, id as string)
+
+    sendResponse(res, {
+        success: true,
+        statusCode: HttpStatus.CREATED,
+        message: "Post create is successfully",
+        data: { result }
+
+    })
 });
 const getAllPosts = catchAsync(async (req: Request, res: Response) => {
 
@@ -26,5 +39,5 @@ const deletePost = catchAsync(async (req: Request, res: Response) => {
 
 export const postController = {
     createPost, getAllPosts, getPostStats,
-     getMyPost, getPostById, updatePost, deletePost
+    getMyPost, getPostById, updatePost, deletePost
 }
