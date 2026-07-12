@@ -28,9 +28,17 @@ const getAllPosts = catchAsync(async (req: Request, res: Response) => {
     })
 });
 const getPostStats = catchAsync(async (req: Request, res: Response) => {
-
 });
 const getMyPost = catchAsync(async (req: Request, res: Response) => {
+    const authorId = req.user?.id;
+    const result = await postService.getMyPost(authorId as string);
+
+    sendResponse(res, {
+        success: true,
+        statusCode: HttpStatus.OK,
+        message: 'My Post retrived is successfully',
+        data: result
+    })
 
 });
 const getPostById = catchAsync(async (req: Request, res: Response) => {
@@ -48,7 +56,6 @@ const getPostById = catchAsync(async (req: Request, res: Response) => {
     })
 });
 const updatePost = catchAsync(async (req: Request, res: Response) => {
-
 });
 const deletePost = catchAsync(async (req: Request, res: Response) => {
 
