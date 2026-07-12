@@ -11,14 +11,21 @@ const createPost = catchAsync(async (req: Request, res: Response) => {
 
     sendResponse(res, {
         success: true,
-        statusCode: HttpStatus.CREATED,
+        statusCode: HttpStatus.OK,
         message: "Post create is successfully",
         data: { result }
 
     })
 });
 const getAllPosts = catchAsync(async (req: Request, res: Response) => {
+    const result = await postService.getAllPostsFromDB();
 
+    sendResponse(res, {
+        success: true,
+        statusCode: HttpStatus.OK,
+        message: "All Posts retrived is successfully",
+        data: result
+    })
 });
 const getPostStats = catchAsync(async (req: Request, res: Response) => {
 

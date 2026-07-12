@@ -23,7 +23,32 @@ const getAllPostsFromDB = async () => {
     })
     return posts;
 }
+const getPostByIdIntoDB = async (postId: string) => {
+    const post = await prisma.post.findFirstOrThrow({
+        where: {
+            id: postId
+        }
+    })
+    const UpdatedPost = prisma.post.update({
+        where: {
+            id: postId
+        },
+        data: {
+            views: {
+                increment: 1
+            },
+        },
+        include: {
+            author: {
+                omit: {
+                    password: true
+                }
+            }
+        }
+    })
+    return UpdatedPost;
+}
 
 export const postService = {
-    createPostIntoDB, getAllPostsFromDB
+    createPostIntoDB, getAllPostsFromDB, getPostByIdIntoDB
 }
