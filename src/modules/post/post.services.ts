@@ -74,7 +74,7 @@ const getMyPost = async (authorId: string) => {
     return result;
 };
 const updatePostIntoDB = async (
-    postId: string, athorId: string,
+    postId: string, authorId: string,
     payload: IUpdatePostPayload, isAdmin: boolean
 ) => {
     const post = await prisma.post.findFirstOrThrow({
@@ -83,7 +83,7 @@ const updatePostIntoDB = async (
         }
     })
 
-    if (!isAdmin && post.authorId !== athorId) {
+    if (!isAdmin && post.authorId !== authorId) {
         throw new Error("You are not of the owner of this post!")
     }
 
@@ -108,8 +108,26 @@ const updatePostIntoDB = async (
     })
     return result;
 }
+const deletePost = async (postId: string, authorId: string, isAdmin: boolean) => {
+    const post = await prisma.post.findFirstOrThrow({
+        where: {
+            id: postId
+        }
+    });
+
+    if (!isAdmin && post.authorId !== authorId) {
+        throw new Error("You are not of the owner of this post!")
+    }
+
+    await prisma.post.delete({
+        where: {
+            id: postId
+        }
+    })
+
+}
 
 export const postService = {
     createPostIntoDB, getAllPostsFromDB, getPostByIdIntoDB,
-    getMyPost
+    getMyPost, updatePostIntoDB
 }
