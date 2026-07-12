@@ -34,7 +34,18 @@ const getMyPost = catchAsync(async (req: Request, res: Response) => {
 
 });
 const getPostById = catchAsync(async (req: Request, res: Response) => {
+    const postId = req.params.postId;
+    if (!postId) {
+        throw new Error("PostId is required")
+    }
 
+    const result = await postService.getPostByIdIntoDB(postId as string);
+    sendResponse(res, {
+        success: true,
+        statusCode: HttpStatus.OK,
+        message: 'Post retrived is successfully',
+        data: result
+    })
 });
 const updatePost = catchAsync(async (req: Request, res: Response) => {
 

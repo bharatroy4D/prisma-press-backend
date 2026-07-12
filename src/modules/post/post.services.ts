@@ -43,7 +43,8 @@ const getPostByIdIntoDB = async (postId: string) => {
                 omit: {
                     password: true
                 }
-            }
+            },
+            comments: true
         }
     })
     return UpdatedPost;
