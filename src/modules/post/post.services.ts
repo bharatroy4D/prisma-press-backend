@@ -1,3 +1,4 @@
+import { CommentStatus, PostStatus } from "../../../generated/prisma/enums";
 import { prisma } from "../../lib/prisma"
 import { ICreatePostPayload, IUpdatePostPayload } from "./post.interface"
 
@@ -107,7 +108,7 @@ const updatePostIntoDB = async (
         }
     })
     return result;
-}
+};
 const deletePost = async (postId: string, authorId: string, isAdmin: boolean) => {
     const post = await prisma.post.findFirstOrThrow({
         where: {
@@ -124,10 +125,55 @@ const deletePost = async (postId: string, authorId: string, isAdmin: boolean) =>
             id: postId
         }
     })
+    return null;
+};
+const getPostStats = async () => {
+    const transactionResult = await prisma.$transaction(
+        async (tx) => {
+            const totalPosts = await tx.post.count();
 
+            const totalPublishedPosts = await tx.post.count({
+                where: {
+                    status: PostStatus.PUBLISHED
+                }
+            })
+            const totalDraftPosts = await tx.post.count({
+                where: {
+                    status: PostStatus.DRAFT
+                }
+            })
+            const totalArchivedPosts = await tx.post.count({
+                where: {
+                    status: PostStatus.ACHIVED
+                }
+            })
+
+            const totalComments = await tx.comment.count();
+            const totalApprovedComments = await tx.comment.count({
+                where: {
+                    status: CommentStatus.APPROVED
+                }
+            })
+            const totalRejectedComments = await tx.comment.count({
+                where: {
+                    status: CommentStatus.REJECT
+                }
+            })
+            return {
+                totalPosts,
+                totalPublishedPosts,
+                totalDraftPosts,
+                totalArchivedPosts,
+                totalComments,
+                totalApprovedComments,
+                totalRejectedComments
+            }
+        }
+    );
+    return transactionResult;
 }
 
 export const postService = {
     createPostIntoDB, getAllPostsFromDB, getPostByIdIntoDB,
-    getMyPost, updatePostIntoDB
+    getMyPost, updatePostIntoDB, deletePost, getPostStats
 }
