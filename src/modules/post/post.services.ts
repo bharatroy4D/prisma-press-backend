@@ -1,3 +1,4 @@
+import { constants } from "node:buffer";
 import { CommentStatus, PostStatus } from "../../../generated/prisma/enums";
 import { prisma } from "../../lib/prisma"
 import { ICreatePostPayload, IUpdatePostPayload } from "./post.interface"
@@ -13,6 +14,20 @@ const createPostIntoDB = async (payload: ICreatePostPayload, userId: string) => 
 };
 const getAllPostsFromDB = async () => {
     const posts = await prisma.post.findMany({
+        where:{
+           OR:[
+            {
+                title:{
+                    contains:"mole"
+                }
+            },
+            {
+                content:{
+                    contains:"moles"
+                }
+            }
+           ]
+        },
         include: {
             author: {
                 omit: {
@@ -130,35 +145,58 @@ const deletePost = async (postId: string, authorId: string, isAdmin: boolean) =>
 const getPostStats = async () => {
     const transactionResult = await prisma.$transaction(
         async (tx) => {
-            const totalPosts = await tx.post.count();
 
-            const totalPublishedPosts = await tx.post.count({
-                where: {
-                    status: PostStatus.PUBLISHED
-                }
-            })
-            const totalDraftPosts = await tx.post.count({
-                where: {
-                    status: PostStatus.DRAFT
-                }
-            })
-            const totalArchivedPosts = await tx.post.count({
-                where: {
-                    status: PostStatus.ACHIVED
-                }
-            })
+            const [
+                totalPosts,
+                totalPublishedPosts,
+                totalDraftPosts,
+                totalArchivedPosts,
+                totalComments,
+                totalApprovedComments,
+                totalRejectedComments,
+                totalPostViewsAgregate
+            ] = await Promise.all([
+                await tx.post.count(),
 
-            const totalComments = await tx.comment.count();
-            const totalApprovedComments = await tx.comment.count({
-                where: {
-                    status: CommentStatus.APPROVED
-                }
-            })
-            const totalRejectedComments = await tx.comment.count({
-                where: {
-                    status: CommentStatus.REJECT
-                }
-            })
+                await tx.post.count({
+                    where: {
+                        status: PostStatus.PUBLISHED
+                    }
+                }),
+
+                await tx.post.count({
+                    where: {
+                        status: PostStatus.DRAFT
+                    }
+                }),
+
+                await tx.post.count({
+                    where: {
+                        status: PostStatus.ACHIVED
+                    }
+                }),
+
+                await tx.comment.count(),
+
+                await tx.comment.count({
+                    where: {
+                        status: CommentStatus.APPROVED
+                    }
+                }),
+
+                await tx.comment.count({
+                    where: {
+                        status: CommentStatus.REJECT
+                    }
+                }),
+
+                await tx.post.aggregate({
+                    _sum: {
+                        views: true
+                    }
+                }),
+
+            ]);
             return {
                 totalPosts,
                 totalPublishedPosts,
@@ -166,10 +204,11 @@ const getPostStats = async () => {
                 totalArchivedPosts,
                 totalComments,
                 totalApprovedComments,
-                totalRejectedComments
+                totalRejectedComments,
+                totalPostViews: totalPostViewsAgregate._sum.views
             }
         }
-    );
+    )
     return transactionResult;
 }
 
