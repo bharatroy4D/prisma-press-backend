@@ -18,7 +18,9 @@ const createPost = catchAsync(async (req: Request, res: Response) => {
     })
 });
 const getAllPosts = catchAsync(async (req: Request, res: Response) => {
-    const result = await postService.getAllPostsFromDB();
+    const query = req.query;
+
+    const result = await postService.getAllPostsFromDB(query);
 
     sendResponse(res, {
         success: true,
@@ -29,7 +31,7 @@ const getAllPosts = catchAsync(async (req: Request, res: Response) => {
 });
 const getPostStats = catchAsync(async (req: Request, res: Response) => {
     const result = await postService.getPostStats();
-    
+
     sendResponse(res, {
         success: true,
         statusCode: HttpStatus.OK,

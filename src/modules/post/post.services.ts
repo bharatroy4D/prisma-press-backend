@@ -1,7 +1,7 @@
 import { constants } from "node:buffer";
 import { CommentStatus, PostStatus } from "../../../generated/prisma/enums";
 import { prisma } from "../../lib/prisma"
-import { ICreatePostPayload, IUpdatePostPayload } from "./post.interface"
+import { ICreatePostPayload, IPostQuery, IUpdatePostPayload } from "./post.interface"
 
 const createPostIntoDB = async (payload: ICreatePostPayload, userId: string) => {
     const result = await prisma.post.create({
@@ -12,22 +12,10 @@ const createPostIntoDB = async (payload: ICreatePostPayload, userId: string) => 
     })
     return result;
 };
-const getAllPostsFromDB = async () => {
+const getAllPostsFromDB = async (query: IPostQuery) => {
+
     const posts = await prisma.post.findMany({
-        where:{
-           OR:[
-            {
-                title:{
-                    contains:"mole"
-                }
-            },
-            {
-                content:{
-                    contains:"moles"
-                }
-            }
-           ]
-        },
+
         include: {
             author: {
                 omit: {
